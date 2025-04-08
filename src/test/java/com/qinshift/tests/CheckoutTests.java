@@ -66,10 +66,40 @@ public class CheckoutTests extends BaseTest {
         Assert.assertTrue(yourCartPage.getPageURL().contains("cart.html"), "Your Cart page is presented.");
     }
 
+    @Test(description = "Verify that user can cancel checkout from overview page.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Checkout")
+    public void testCancelOverviewCheckoutProductPage() {
+        checkoutPage.setUserData(firstName, lastName, postalCode);
+        checkoutPage.getContinueButton().click();
+
+        checkoutOverviewPage = new CheckoutOverviewPage(driver);
+        checkoutOverviewPage.getCancelButton().click();
+        Assert.assertTrue(homePage.getPageURL().contains("inventory.html"), "Checkout canceled and user redirected to home page");
+    }
+
     @Test(description = "Verify that user can do a valid checkout.")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Checkout")
     public void testCheckoutProductPage() {
+        checkoutPage.setUserData(firstName, lastName, postalCode);
+        checkoutPage.getContinueButton().click();
+
+        checkoutOverviewPage = new CheckoutOverviewPage(driver);
+        checkoutOverviewPage.getFinishButton().click();
+
+        checkoutCompletePage = new CheckoutCompletePage(driver);
+        Assert.assertEquals(checkoutCompletePage.getOrderCompleted(), "Thank you for your order!");
+    }
+
+    @Test(description = "Verify that user can checkout with multiple products.")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Checkout")
+    public void testCheckoutWithMultipleProducts() {
+        homePage.addMultipleProductsToCart(3);
+        productPage.getShoppingCartBucket().click();
+
+        yourCartPage.getCheckoutButton().click();
         checkoutPage.setUserData(firstName, lastName, postalCode);
         checkoutPage.getContinueButton().click();
 
@@ -115,4 +145,20 @@ public class CheckoutTests extends BaseTest {
         Assert.assertTrue(errorMessageHelper.getErrorMessageElement().isDisplayed(), "Error message should be displayed.");
         Assert.assertEquals(errorMessageHelper.getErrorMessageText(), prop.getProperty("invalid_postal_code_checkout_error"), "Error message text is correct.");
     }
+
+    //TODO - INVESTIGATE This is bug or feature? :D
+    @Test(description = "Verify that user can checkout with long input values.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Checkout")
+    public void testLongInputFieldsCheckout() {
+        String longString = "A".repeat(256); // 256 characters
+        checkoutPage.setUserData(longString, longString, longString);
+        checkoutPage.getContinueButton().click();
+
+        checkoutOverviewPage = new CheckoutOverviewPage(driver);
+        checkoutOverviewPage.getFinishButton().click();
+
+        checkoutCompletePage = new CheckoutCompletePage(driver);
+        Assert.assertEquals(checkoutCompletePage.getOrderCompleted(), "Thank you for your order!");
+         }
 }

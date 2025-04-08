@@ -50,6 +50,13 @@ public class ProductTests extends BaseTest {
         productPage.resetAppState();
     }
 
+    @Test(description = "Verify that a product price is not null.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Add to Cart")
+    public void testCheckProductPriceToCartProductPage() {
+        Assert.assertFalse(productPage.getProductPrice().isEmpty() , "Product price is not null");
+    }
+
     @Test(description = "Verify that multiple products can be added to the cart from the product details page.")
     @Severity(SeverityLevel.NORMAL)
     @Story("Add to Cart")

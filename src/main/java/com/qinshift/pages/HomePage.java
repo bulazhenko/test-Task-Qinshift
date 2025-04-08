@@ -86,4 +86,15 @@ public class HomePage extends BasePage {
         logger.info("Clicking on Remove from Cart button for index: {}", index);
         getRemoveFromCart(index).click();
     }
+
+    public void addMultipleProductsToCart(int numberOfProducts) {
+        for (int i = 1; i <= numberOfProducts; i++) {
+            try {
+                logger.info("Adding product {} to cart.", i);
+                clickOnAddToCart(i); // Add product i to the cart
+            } catch (Exception e) {
+                logger.error("Error adding product {} to the cart.", i, e);
+            }
+        }
+    }
 }

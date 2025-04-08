@@ -41,9 +41,4 @@ public class CheckoutPage extends BasePage {
         WebElement getContinueButton = driver.findElement(CONTINUE_BUTTON);
         return getContinueButton;
     }
-
-    public WebElement getErrorMessageElement() {
-        logger.info("Getting error message element");
-        return driver.findElement(ERROR_MESSAGE_LABEL);
-    }
 }
