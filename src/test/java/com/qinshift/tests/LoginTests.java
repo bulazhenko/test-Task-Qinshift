@@ -1,5 +1,6 @@
 package com.qinshift.tests;
 
+import com.qinshift.entities.ErrorMessageHelper;
 import com.qinshift.pages.HomePage;
 import com.qinshift.pages.LoginPage;
 import io.qameta.allure.Feature;
@@ -17,7 +18,7 @@ import org.testng.annotations.Test;
 public class LoginTests extends BaseTest {
 
     private LoginPage loginPage;
-    private static final String LOCKED_OUT_USER_ERROR = "Epic sadface: Sorry, this user has been locked out.";
+    private ErrorMessageHelper errorMessageHelper;
     private static final String PRODUCTS_PAGE_TITLE = "Products";
     private static final boolean PRESS_ENTER_KEY = true;
     private static final Logger logger = LoggerFactory.getLogger(LoginTests.class);
@@ -45,7 +46,8 @@ public class LoginTests extends BaseTest {
 
     private void assertLockedOutUser(String username) {
         if (username.equalsIgnoreCase("locked_out_user")) {
-            Assert.assertEquals(loginPage.getErrorMessageText(), LOCKED_OUT_USER_ERROR, "Locked out user error message is incorrect.");
+            errorMessageHelper = new ErrorMessageHelper(driver);
+            Assert.assertEquals(errorMessageHelper.getErrorMessageText(), prop.getProperty("locked_out_user_error"), "Locked out user error message is incorrect.");
         }
     }
 
@@ -103,7 +105,8 @@ public class LoginTests extends BaseTest {
 
     private void assertInvalidLoginError() {
         logger.info("Asserting invalid login error");
-        Assert.assertTrue(Boolean.parseBoolean(String.valueOf(loginPage.getErrorMessageElement().isDisplayed())), "Error message should be displayed.");
-        Assert.assertEquals(loginPage.getErrorMessageText(), prop.getProperty("invalid_login_error"), "Error message text is incorrect.");
+        errorMessageHelper = new ErrorMessageHelper(driver);
+        Assert.assertTrue(Boolean.parseBoolean(String.valueOf(errorMessageHelper.getErrorMessageElement().isDisplayed())), "Error message should be displayed.");
+        Assert.assertEquals(errorMessageHelper.getErrorMessageText(), prop.getProperty("invalid_login_error"), "Error message text is incorrect.");
     }
 }

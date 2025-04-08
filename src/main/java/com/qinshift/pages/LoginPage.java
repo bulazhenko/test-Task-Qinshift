@@ -3,7 +3,6 @@ package com.qinshift.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,6 @@ public class LoginPage extends BasePage {
     private static final By USERNAME_INPUT = By.id("user-name");
     private static final By PASSWORD_INPUT = By.name("password");
     private static final By LOGIN_BUTTON = By.className("submit-button");
-    private static final By ERROR_MESSAGE_LABEL = By.tagName("h3");
 
     public LoginPage(WebDriver driver) {
         super(driver);
@@ -30,18 +28,6 @@ public class LoginPage extends BasePage {
             driver.findElement(LOGIN_BUTTON).click();
         }
         logger.info("Login action performed");
-    }
-
-    public WebElement getErrorMessageElement() {
-        logger.info("Getting error message element");
-        return driver.findElement(ERROR_MESSAGE_LABEL);
-    }
-
-    public String getErrorMessageText() {
-        WebElement errorMessageElement = getErrorMessageElement();
-        String errorMessage = errorMessageElement.getText();
-        logger.info("Error message text: {}", errorMessage);
-        return errorMessage;
     }
 
     private String maskPassword(String password) {

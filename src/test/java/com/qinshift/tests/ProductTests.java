@@ -18,8 +18,9 @@ public class ProductTests extends BaseTest {
     private LoginPage loginPage;
     private ProductPage productPage;
 
-    private static final int EXPECTED_CART_COUNT_1 = 1;
-    private static final int EXPECTED_CART_COUNT_0 = 0;
+    private static final int CART_COUNT_TWO = 2;
+    private static final int CART_COUNT_ONE = 1;
+    private static final int CART_COUNT_ZERO = 0;
 
     @BeforeMethod
     public void setup() {
@@ -31,12 +32,32 @@ public class ProductTests extends BaseTest {
         productPage = new ProductPage(driver);
     }
 
+    private void addProductToCart() {
+        productPage.getAddToCartButton().click();
+        Assert.assertEquals(homePage.getCartCount(), CART_COUNT_ONE, "Cart count should be 1 after adding product.");
+    }
+
+    private void removeProductFromCart() {
+        productPage.getRemoveFromCartButton().click();
+        Assert.assertEquals(productPage.getCartCountList().size(), CART_COUNT_ZERO, "Cart count should be 0 after removing product.");
+    }
+
     @Test(description = "Verify that a product can be added to the cart from the product details page.")
     @Severity(SeverityLevel.NORMAL)
     @Story("Add to Cart")
     public void testAddToCartProductPage() {
-        productPage.getAddToCartButton().click();
-        Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_1, "Cart count should be 1 after adding product from product page.");
+        addProductToCart();
+        productPage.resetAppState();
+    }
+
+    @Test(description = "Verify that multiple products can be added to the cart from the product details page.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Add to Cart")
+    public void testAddMultipleProductsToCart() {
+        productPage.getBackToProductsButton().click();
+        homePage.clickOnAddToCart(2);
+        homePage.clickOnAddToCart(3);
+        Assert.assertEquals(homePage.getCartCount(), CART_COUNT_TWO, "Cart count should be 2 after adding multiple products.");
         productPage.resetAppState();
     }
 
@@ -44,9 +65,7 @@ public class ProductTests extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Story("Remove from Cart")
     public void testRemoveFromCartProductPage() {
-        productPage.getAddToCartButton().click();
-        Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_1, "Cart count should be 1 after adding product.");
-        productPage.getRemoveFromCartButton().click();
-        Assert.assertEquals(productPage.getCartCountList().size(), EXPECTED_CART_COUNT_0, "Cart count should be 0 after removing product from product page.");
+        addProductToCart();
+        removeProductFromCart();
     }
 }
