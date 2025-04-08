@@ -79,7 +79,6 @@ public class PageEntitysTests extends BaseTest {
         loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
         HomePage homePage = new HomePage(driver);
 
-        // Open 3 child windows
         homePage.goToSocialMedia("facebook");
         homePage.goToSocialMedia("twitter");
         homePage.goToSocialMedia("linkedin");
@@ -96,7 +95,6 @@ public class PageEntitysTests extends BaseTest {
                 String childPageTitle = driver.getTitle();
                 Assert.assertNotNull(childPageTitle, "Child window title should not be null.");
 
-                // Instead of multiple if-else, consider using a data-driven approach if the number of social media links increases.
                 if (childPageTitle.toLowerCase().contains("twitter")) {
                     Assert.assertTrue(true, "Twitter page title verification failed.");
                 } else if (childPageTitle.toLowerCase().contains("facebook")) {

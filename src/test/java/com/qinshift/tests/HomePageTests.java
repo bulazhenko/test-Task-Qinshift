@@ -48,7 +48,7 @@ public class HomePageTests extends BaseTest {
 
         homePage.clickOnAddToCart(DEFAULT_PRODUCT_INDEX_3);
         Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_2, "Cart count should be 2 after adding two products.");
-        homePage.resetAppState(); // Consider if this is the best place for reset.  See note below.
+        homePage.resetAppState();
     }
 
     @Test(description = "Verify product is removed from cart successfully")
@@ -58,6 +58,6 @@ public class HomePageTests extends BaseTest {
         Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_2, "Cart count should be 2 before removing a product.");
         homePage.clickOnRemoveFromCart(DEFAULT_PRODUCT_INDEX_2);
         Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_1, "Cart count should be 1 after removing one product.");
-        homePage.resetAppState();  // Consider if this is the best place for reset. See note below.
+        homePage.resetAppState();
     }
 }
