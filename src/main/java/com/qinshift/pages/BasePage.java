@@ -69,13 +69,21 @@ public class BasePage {
 
     public int getCartCount() {
         logger.info("Getting cart count");
-        String cartCountText = driver.findElement(CART_COUNT).getText();
         try {
+            WebElement cartCountElement = driver.findElement(CART_COUNT);
+            String cartCountText = cartCountElement.getText();
+            if (cartCountText.isEmpty()) {
+                logger.warn("Cart count text is null or empty. Returning 0.");
+                return 0;
+            }
             int count = Integer.parseInt(cartCountText);
             logger.debug("Cart count: {}", count);
             return count;
         } catch (NumberFormatException e) {
-            logger.warn("Cart count is not a valid number.  Returning 0.", e);
+            logger.warn("Cart count is not a valid number. Returning 0.", e);
+            return 0;
+        } catch (Exception e) {
+            logger.warn("Error getting cart count. Returning 0.", e);
             return 0;
         }
     }

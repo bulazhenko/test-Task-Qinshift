@@ -1,102 +1,173 @@
 # 💠 DEMO UI Test Automation Project for Swag Labs
 
-# Overview
-This repository contains a test task designed to demonstrate a UI automation project setup, structure, functionality.
-The project based on Selenium, TestNG, and Allure for reporting.
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Architecture](#-architecture-overview)
+- [Design Patterns](#-design-patterns)
+- [Project Structure](#-project-structure)
+- [Technologies](#-technologies-used)
+- [Prerequisites](#prerequisites)
+- [Installation](#-installation)
+- [Running Tests](#running-tests)
+- [Reports](#generating-allure-reports)
+- [Logging](#logging)
+- [CI/CD](#continuous-integration)
+- [Contributing](#contribution)
+- [License](#license)
 
-#  🧩 Architecture Overview
+## Overview
+This repository contains a test task designed to demonstrate a UI automation project setup, structure, and functionality. The project is built using Selenium, TestNG, and Allure for comprehensive test reporting.
 
-The project follows a layered architecture to ensure modularity, scalability, and ease of maintenance. Below are the key components of the architecture:
-1. Test Layer
+## 🧩 Architecture Overview
 
-This layer contains all the test cases, written using TestNG. Each test case is structured around the following principles:
+### 1. Test Layer
+- **TestNG Framework**: All test cases are implemented using TestNG
+- **Key Features**:
+  - Modular and independent test cases
+  - Parameterized tests for flexible execution
+  - Thread-safe design for parallel execution
+  - Comprehensive test coverage
+  - Data-driven testing support
+  - Test grouping and prioritization
 
-    Modularity: Tests are independent and modular to ensure they can be run in isolation.
-    Parameterization: Some tests are parameterized to handle different input conditions, allowing flexible execution across environments.
-    Thread Safety: The tests are designed to be thread-safe, ensuring reliable execution in parallel test runs. This allows tests to be run concurrently without conflicts or interference between threads.
+### 2. Page Object Model (POM) Architecture
+- **Page Classes**: Each web page is represented by a dedicated class
+  - `LoginPage`
+  - `HomePage`
+  - `ProductPage`
+  - etc.
 
-2. POM - Page object model Architecture
+- **Locators**: Defined using Selenium's `By` class with explicit wait strategies
+  ```java
+  private static final By USERNAME_INPUT = By.id("user-name");
+  ```
 
-Each web page in the application under test (AUT) is represented by a separate class, called a "Page Object".
-This class contains:
-- Locators for the elements on that page (e.g., buttons, input fields).
-- Methods that represent the actions that can be performed on that page (e.g., "login", "add to cart").
+- **Methods**: Encapsulate user interactions with fluent interface pattern
+  ```java
+  public LoginPage doLogIn(String username, String password, boolean pressEnterKey)
+  ```
 
-The test cases then interact with the AUT through these Page Object classes, rather than directly with the web elements.
+#### Benefits of POM:
+- ✅ **Maintainability**: UI changes only require updates in Page Objects
+- ✅ **Readability**: Tests use meaningful method names
+- ✅ **Reusability**: Page Object methods are reusable across tests
+- ✅ **Reduced Duplication**: Common interactions are centralized
+- ✅ **Test Stability**: Centralized element location management
+- ✅ **Code Organization**: Clear separation of concerns
 
+### 3. Utilities Layer
+- **Helper Classes**: Utility functions for:
+  - Data generation using Builder pattern
+  - API interactions with REST Assured
+  - File handling with Apache Commons IO
+- **Test Data Management**: External data storage (JSON, XML)
+- **Configuration Management**: Property file handling
+- **Custom Waits**: Explicit wait implementations
 
- ## Page Classes:
- Classes like LoginPage, HomePage, and ProductPage.  Each of these represents a specific page in the web application.
-Locators:
-- Within these page classes, define locators (using By) for the web elements on that page.
+### 4. Configuration Layer
+- **Environment Configuration**: Externalized in `remote.properties`
+- **Dynamic Configuration**: Supports multiple environments
+- **Logging**: Comprehensive logging using SLF4J & Logback
+- **Aspect-Oriented Programming**: Cross-cutting concerns management
 
-For example: 
-- private static final By USERNAME_INPUT = By.id("user-name");
+### 5. Reporting
+- **Allure Reports**: Detailed test execution reports
+- **Features**:
+  - Test result visualization
+  - Step-by-step execution details
+  - Failure analysis
+  - Historical trends
+  - Custom attachments
+  - Environment information
 
-Methods: 
-- The page classes also contain methods that represent user interactions with the page.
+## 🎯 Design Patterns
 
-For example, in LoginPage:
-- public void doLogIn(String username, String password, boolean pressEnterKey)
+### 1. Singleton Pattern
+- **Purpose**: WebDriver instance management
+- **Implementation**: Thread-safe singleton with double-checked locking
+- **Benefits**:
+  - Single instance across test execution
+  - Resource optimization
+  - Prevention of SessionNotFoundException
+  - Efficient parallel execution
 
-## Test Cases:
-Test classes (e.g., LoginTests, HomePageTests, ProductTests) use these Page Object methods to interact with the application. 
+### 2. Factory Pattern
+- **Purpose**: WebDriver creation and management
+- **Implementation**: Factory classes for different browsers
+- **Benefits**:
+  - Flexible browser selection
+  - Encapsulated creation logic
+  - Easy extension for new browsers
 
-For example:
-- loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
+### 3. Builder Pattern
+- **Purpose**: Test data object creation
+- **Implementation**: Fluent interface for object construction
+- **Benefits**:
+  - Clear object construction
+  - Optional parameter handling
+  - Immutable objects
 
-## Benefits of this architecture:
+### 4. Strategy Pattern
+- **Purpose**: Different wait strategies
+- **Implementation**: Interface-based wait implementations
+- **Benefits**:
+  - Flexible wait handling
+  - Easy strategy switching
+  - Test-specific wait implementations
 
-✅ Maintainability: If the UI of the AUT changes, you only need to update the locators or methods in the corresponding Page Object class.  Your test cases remain unchanged.
-
-✅ Readability: Test cases become more readable because they use meaningful method names (e.g., loginPage.doLogIn()) rather than low-level Selenium commands.
-
-✅ Reusability: Page Object methods can be reused across multiple test cases.
-
-✅Reduced Duplication: Common page interactions are encapsulated in Page Objects, avoiding code duplication in test cases.
-
-3. Utilities Layer
-
-   Helper Classes: These provide utility functions for actions such as data generation, API calls, and file handling.
-   Test Data Management: Test data is stored in external files (JSON, XML, etc.), ensuring easy updates without code changes. The data is loaded dynamically into the test cases.
-
-4. Configuration Layer
-   Environment Configuration: Configuration settings like environment URLs and other dynamic data are defined externally in remote.properties. This allows easy switching between different environments (remote, local) without changing the test code.
-   like : Configuration.java, Common.property;
-Logging: The project includes logging at various levels (INFO, DEBUG, ERROR) to capture detailed runtime information.
-
-5. Reporting
-   Allure Reporting: The project integrates with Allure to generate detailed test execution reports. Allure reports provide insights into test results, including failure logs, step-by-step execution, and detailed logs.
-
-
+### 5. Facade Pattern
+- **Purpose**: Simplified API for complex subsystems
+- **Implementation**: High-level interfaces for common operations
+- **Benefits**:
+  - Simplified test code
+  - Reduced complexity
+  - Better maintainability
 
 ## 🗂 Project Structure
-- **`src/main/java`**: Contains the main framework code.
-- **`src/test/java`**: Contains test cases written using TestNG.
-- **`src/test/resources`**: Holds configuration files (e.g., test data, driver paths, xml).
-- **`target/allure-results`**: Stores test execution results for Allure reports.
+```
+project-root/
+├── src/
+│   ├── main/java/        # Framework code
+│   │   ├── core/         # Core framework components
+│   │   ├── pages/        # Page Object classes
+│   │   ├── utils/        # Utility classes
+│   │   └── config/       # Configuration classes
+│   ├── test/java/        # TestNG test cases
+│   └── test/resources/   # Configuration files
+└── target/
+    └── allure-results/   # Test execution results
+```
 
-##  ⚙️ Technologies Used
-- **Java 17**
-- **Maven** (for build automation)
-- **Selenium 4.31.0** (for browser automation.
+## ⚙️ Technologies Used
+- **Java 17**: Core programming language
+- **Maven**: Build automation and dependency management
+- **Selenium 4.31.0**: Browser automation
+- **TestNG 7.11.0**: Test execution framework
+- **SLF4J & Logback**: Logging framework
+- **AspectJ Weaver**: AOP-based logging
+- **Allure 2.21.0**: Test reporting
+- **REST Assured**: API testing
+- **Apache Commons**: Utility libraries
+- **Jackson**: JSON processing
 
-Why Use WebDriver implementation as Singleton?
-
-Ensures only one instance of WebDriver exists.
-Reduces resource consumption.
-Prevents SessionNotFoundException from multiple driver instances.
-Makes WebDriver management more efficient in parallel execution).
-
-- **TestNG 7.11.0** (for test execution and assertions)
-- **SLF4J & Logback** (for logging and debug)
-- **AspectJ Weaver** (for AOP-based logging and tracing)
-- **Allure 2.21.0** (for test reporting)
+### WebDriver Implementation
+- Singleton pattern for WebDriver management
+- Thread-safe implementation
+- Custom wait strategies
+- Browser factory pattern
+- Benefits:
+  - Single instance management
+  - Resource optimization
+  - Prevention of SessionNotFoundException
+  - Efficient parallel execution
+  - Flexible browser selection
+  - Customizable wait strategies
 
 ## Prerequisites
-- Java 17 installed
-- Maven installed
-- Chrome or Firefox browser installed
+- Java 17
+- Maven
+- Chrome or Firefox browser
+- Allure command-line tool
 
 ## 🛠 Installation
 1. Clone the repository:
@@ -104,36 +175,57 @@ Makes WebDriver management more efficient in parallel execution).
    git clone https://github.com/bulazhenko/test-Task-Qinshift.git
    cd test-Task-Qinshift
    ```
+
 2. Build the project:
    ```bash
    mvn clean install
    ```
 
 ## Running Tests
-To execute tests, run:
+Execute tests using:
 ```bash
 mvn test
 ```
 
+For specific test groups:
+```bash
+mvn test -Dgroups=smoke
+```
+
+For parallel execution:
+```bash
+mvn test -DthreadCount=4
+```
+
 ## Generating Allure Reports
-After running tests, generate the Allure report using:
+Generate and view reports:
 ```bash
 mvn io.qameta.allure:allure-maven:2.10.0:serve
 ```
-This will open an interactive test report in your browser.
 
 ## Logging
-The framework uses SLF4J with Logback for logging test execution details. Logs can be found under `target/logs/`.
+- Framework uses SLF4J with Logback
+- Logs location: `target/logs/`
+- Multiple log levels (INFO, DEBUG, ERROR)
+- AOP-based logging for test methods
+- Custom log appenders
+- Log rotation configuration
 
 ## Continuous Integration
-The project is configured for Jenkins CI/CD.
+- Jenkins CI/CD integration
+- Automated test execution
+- Report generation
+- Email notifications
+- Test result trend analysis
+- Parallel test execution
 
 ## Contribution
 1. Fork the repository
-2. Create a new branch (`feature-branch`)
-3. Commit changes with detailed comment and push (`git push origin feature-branch`)
-4. Open a Pull Request
+2. Create a feature branch (`git checkout -b feature-branch`)
+3. Commit changes (`git commit -m 'Detailed description'`)
+4. Push to branch (`git push origin feature-branch`)
+5. Open a Pull Request
 
 ## License
 - Owner: Bohdan Bulazhenko
-- This project is licensed under the MIT License.
+- License: MIT License

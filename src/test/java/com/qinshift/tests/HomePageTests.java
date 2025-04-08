@@ -40,7 +40,7 @@ public class HomePageTests extends BaseTest {
     }
 
     @Test(description = "Verify that clicking on a product name navigates to the correct product page.")
-    @Severity(SeverityLevel.NORMAL)
+    @Severity(SeverityLevel.CRITICAL)
     @Story("Product Page Navigation")
     public void testGoToProductPage() {
         homePage.clickOnProductName(prop.getProperty("product_name"));
@@ -72,6 +72,20 @@ public class HomePageTests extends BaseTest {
         homePage.clickOnRemoveFromCart(DEFAULT_PRODUCT_INDEX_2);
         Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_1, "Cart count should be 1 after removing one product.");
         homePage.resetAppState();
+    }
+
+    @Test(description = "Verify that reset app state functionality works correctly.")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Reset App State")
+    public void testResetAppState() {
+        homePage.clickOnAddToCart(DEFAULT_PRODUCT_INDEX_1);
+        homePage.clickOnAddToCart(DEFAULT_PRODUCT_INDEX_2);
+        Assert.assertEquals(homePage.getCartCount(), EXPECTED_CART_COUNT_2,
+                "Cart count should be 2 items before reset");
+
+        homePage.resetAppState();
+        Assert.assertEquals(homePage.getCartCount(), 0,
+                "Cart count should be zero after reset");
     }
 }
 

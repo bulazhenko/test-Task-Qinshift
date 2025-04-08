@@ -3,27 +3,44 @@ pipeline {
 
     tools {
         maven 'Maven 3.8.6'
+        jdk 'JDK17'
     }
 
     environment {
         ALLURE_RESULTS_DIRECTORY = 'target/allure-results'
         ALLURE_REPORT_DIRECTORY = 'target/allure-report'
+        MAVEN_OPTS = '-Dmaven.repo.local=.m2/repository'
+    }
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/bulazhenko/test-Task-Qinshift.git'
+                checkout scm
             }
         }
 
         stage('Build & Test') {
-            steps {
-                sh 'mvn clean test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
+            parallel {
+                stage('Unit Tests') {
+                    steps {
+                        sh 'mvn clean test -Dparallel=methods -DthreadCount=4'
+                    }
+                    post {
+                        always {
+                            junit '**/target/surefire-reports/*.xml'
+                        }
+                    }
+                }
+                stage('Integration Tests') {
+                    steps {
+                        sh 'mvn verify -DskipTests'
+                    }
                 }
             }
         }
@@ -34,6 +51,13 @@ pipeline {
             }
             post {
                 always {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: 'target/allure-results']]
+                    ])
                     archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
                 }
             }
@@ -42,9 +66,25 @@ pipeline {
 
     post {
         always {
-            mail to: 'bohdanbulazhenko@gmail.com',
-                subject: "Jenkins Test Report - ${currentBuild.fullDisplayName}",
-                body: "Check the test results at: ${BUILD_URL}"
+            script {
+                def buildStatus = currentBuild.currentResult
+                def subject = "Jenkins Build ${buildStatus}: ${currentBuild.fullDisplayName}"
+                def body = """
+                    Check the build results at: ${BUILD_URL}
+                    Allure Report: ${BUILD_URL}allure/
+                    Test Results: ${BUILD_URL}testReport/
+                """
+
+                emailext(
+                    subject: subject,
+                    body: body,
+                    to: 'bohdanbulazhenko@gmail.com',
+                    attachLog: true
+                )
+            }
+        }
+        cleanup {
+            cleanWs()
         }
     }
 }

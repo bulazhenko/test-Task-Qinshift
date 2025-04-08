@@ -12,19 +12,17 @@ import java.util.Properties;
 public class BaseTest {
     protected WebDriver driver;
     protected Properties prop;
-    protected Properties XPATH;
     protected SoftAssert softAssert;
 
     @BeforeClass
     public void setupBeforeTest() {
-        this.driver = SingletonWebDriver.getDriver(); // Use Singleton
+        this.driver = SingletonWebDriver.getDriver();
         this.prop = Configuration.getProperties("common");
-        this.XPATH = Configuration.getProperties("xpath");
         this.softAssert = new SoftAssert();
     }
 
     @AfterClass
     public void setupAfterSuite() {
-        SingletonWebDriver.quitDriver(); // Quit driver safely
+        SingletonWebDriver.quitDriver();
     }
 }
