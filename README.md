@@ -126,7 +126,7 @@ This will open an interactive test report in your browser.
 The framework uses SLF4J with Logback for logging test execution details. Logs can be found under `target/logs/`.
 
 ## Continuous Integration
-The project is configured for CI/CD with tools like Jenkins and GitLab CI/CD.
+The project is configured for Jenkins CI/CD.
 
 ## Contribution
 1. Fork the repository

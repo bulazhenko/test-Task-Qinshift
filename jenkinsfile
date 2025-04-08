@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven 3.8.6'
+    }
+
+    environment {
+        ALLURE_RESULTS_DIRECTORY = 'target/allure-results'
+        ALLURE_REPORT_DIRECTORY = 'target/allure-report'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bulazhenko/test-Task-Qinshift.git'
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Generate Allure Report') {
+            steps {
+                sh 'mvn allure:report'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            mail to: 'bohdanbulazhenko@gmail.com',
+                subject: "Jenkins Test Report - ${currentBuild.fullDisplayName}",
+                body: "Check the test results at: ${BUILD_URL}"
+        }
+    }
+}
