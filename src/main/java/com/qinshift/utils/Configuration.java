@@ -14,7 +14,6 @@ public class Configuration {
 
     /**
      * Loads properties from the specified file.
-     *
      * @param filename The name of the properties file (without the .properties extension).
      * @return A Properties object containing the loaded properties, or an empty Properties object if the file is not found or an error occurs.
      */

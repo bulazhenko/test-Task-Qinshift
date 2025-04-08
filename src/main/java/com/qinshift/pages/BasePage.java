@@ -10,6 +10,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BasePage {
     protected final WebDriver driver;
@@ -17,6 +19,8 @@ public class BasePage {
     protected final Properties properties;
     protected final Properties xPathProperties;
     protected final Actions actions;
+
+    private static final Logger logger = LoggerFactory.getLogger(BasePage.class);
 
     private static final By HAMBURGER_MENU = By.id("react-burger-menu-btn");
     private static final By CART_COUNT = By.xpath("//div[@id='shopping_cart_container']/a/span");
@@ -31,56 +35,79 @@ public class BasePage {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(50));
         this.properties = Configuration.getProperties("SwagLabs");
-        this.xPathProperties = Configuration.getProperties("xpath"); // Corrected variable name
+        this.xPathProperties = Configuration.getProperties("xpath");
         this.actions = new Actions(driver);
     }
 
     public String getPageURL() {
-        return driver.getCurrentUrl();
+        logger.info("Getting current page URL");
+        String url = driver.getCurrentUrl();
+        logger.debug("Current URL: {}", url);
+        return url;
     }
 
     public String getPageTitle() {
-        return driver.getTitle();
+        logger.info("Getting current page title");
+        String title = driver.getTitle();
+        logger.debug("Page title: {}", title);
+        return title;
     }
 
     public String getPageSource() {
-        return driver.getPageSource();
+        logger.info("Getting page source");
+        String source = driver.getPageSource();
+        logger.debug("Page source (length): {}", source.length());
+        return source;
     }
 
     public void logout() {
+        logger.info("Logging out");
         driver.findElement(HAMBURGER_MENU).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(LOGOUT_BUTTON)).click();
+        logger.info("Logged out successfully");
     }
 
     public int getCartCount() {
+        logger.info("Getting cart count");
         String cartCountText = driver.findElement(CART_COUNT).getText();
         try {
-            return Integer.parseInt(cartCountText);
+            int count = Integer.parseInt(cartCountText);
+            logger.debug("Cart count: {}", count);
+            return count;
         } catch (NumberFormatException e) {
-            // Handle the case where the cart count is not a valid number (empty cart)
-            return 0; // Or throw an exception, log an error, or return a default value as appropriate
+            logger.warn("Cart count is not a valid number.  Returning 0.", e);
+            return 0;
         }
     }
 
     public void resetAppState() {
+        logger.info("Resetting application state");
         driver.findElement(HAMBURGER_MENU).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(RESET_APP_BUTTON)).click();
         driver.findElement(CLOSE_MENU_BUTTON).click();
+        logger.info("Application state reset successfully");
     }
 
     private WebElement getFacebookLinkElement() {
-        return driver.findElement(FACEBOOK_LINK);
+        logger.info("Getting Facebook link element");
+        WebElement facebookLink =  driver.findElement(FACEBOOK_LINK);
+        return facebookLink;
     }
 
     private WebElement getTwitterLinkElement() {
-        return driver.findElement(TWITTER_LINK);
+        logger.info("Getting Twitter link element");
+        WebElement twitterLink = driver.findElement(TWITTER_LINK);
+        return twitterLink;
     }
 
     private WebElement getLinkedinLinkElement() {
-        return driver.findElement(LINKEDIN_LINK);
+        logger.info("Getting LinkedIn link element");
+        WebElement linkedInLink = driver.findElement(LINKEDIN_LINK);
+        return linkedInLink;
     }
 
     public void goToSocialMedia(String name) {
+        logger.info("Navigating to social media: {}", name);
         WebElement linkToClick = null;
         switch (name.toLowerCase()) {
             case "twitter":
@@ -93,13 +120,19 @@ public class BasePage {
                 linkToClick = getLinkedinLinkElement();
                 break;
             default:
-                System.out.println("Incorrect Social media platform: " + name);
+                logger.warn("Incorrect Social media platform: {}", name);
+                System.out.println("Incorrect Social media platform: " + name); // Keep for backwards compatibility
                 return;
         }
         actions.keyDown(Keys.SHIFT).click(linkToClick).keyUp(Keys.SHIFT).perform();
+        logger.info("Navigated to {} successfully", name);
     }
 
     public boolean verifyPageTitle(String title) {
-        return driver.getTitle().equalsIgnoreCase(title);
+        logger.info("Verifying page title: {}", title);
+        boolean isTitleCorrect = driver.getTitle().equalsIgnoreCase(title);
+        logger.debug("Page title verification result: {}", isTitleCorrect);
+        return isTitleCorrect;
     }
 }
+
