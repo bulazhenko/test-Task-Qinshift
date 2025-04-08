@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SwagLabs">
+    <listeners>
+        <listener class-name="AllureLoggingListener"/>
+    </listeners>
+    <test name="LoginTests">
+        <classes>
+            <class name="com.qinshift.tests.LoginTests"/>
+        </classes>
+    </test>
+    <test name="HomePage">
+        <classes>
+            <class name="com.qinshift.tests.HomePageTests"/>
+        </classes>
+    </test>
+    <test name="ProductTests">
+        <classes>
+            <class name="com.qinshift.tests.ProductTests"/>
+        </classes>
+    </test>
+    <test name="PageEntitiesTests">
+        <classes>
+            <class name="com.qinshift.tests.PageEntitiesTests"/>
+        </classes>
+    </test>
+    <test name="CheckoutTests">
+        <classes>
+            <class name="com.qinshift.tests.CheckoutTests"/>
+        </classes>
+    </test>
+</suite>
