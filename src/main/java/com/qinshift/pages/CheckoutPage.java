@@ -10,7 +10,6 @@ public class CheckoutPage extends BasePage {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductPage.class);
 
-    private static final By ERROR_MESSAGE_LABEL = By.tagName("h3");
     private static final By FIRST_NAME_INPUT = By.xpath("//input[@placeholder='First Name']");
     private static final By LAST_NAME_INPUT = By.xpath("//input[@placeholder='Last Name']");
     private static final By POSTAL_CODE_BUTTON = By.xpath("//input[@placeholder='Zip/Postal Code']");
