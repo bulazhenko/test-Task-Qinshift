@@ -3,6 +3,10 @@ package com.qinshift.tests;
 import com.qinshift.pages.HomePage;
 import com.qinshift.pages.LoginPage;
 import com.qinshift.pages.ProductPage;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -10,7 +14,8 @@ import org.testng.annotations.Test;
 import java.util.Iterator;
 import java.util.Set;
 
-public class PageEntitysTests extends BaseTest {
+@Feature("Page Entities")
+public class PageEntitiesTests extends BaseTest {
 
     private LoginPage loginPage;
     private static final String DESCRIPTION_META_TAG = "<meta name=\"description\" content=\"Sauce Labs Swag Labs app\">";
@@ -42,7 +47,9 @@ public class PageEntitysTests extends BaseTest {
         driver.switchTo().window(mainWindowHandle);
     }
 
-    @Test(description = "Verify page titles")
+    @Test(description = "Verify that page titles are correct for Login, Home, and Product pages.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Page Titles")
     public void testVerifyPageTitles() {
         assertPageTitle(prop.getProperty("page_title"));
 
@@ -51,11 +58,13 @@ public class PageEntitysTests extends BaseTest {
         assertPageTitle(prop.getProperty("page_title"));
 
         homePage.clickOnProductName(prop.getProperty("product_name"));
-        ProductPage productPage = new ProductPage(driver); // Use corrected class name
+        ProductPage productPage = new ProductPage(driver);
         assertPageTitle(prop.getProperty("page_title"));
     }
 
-    @Test(description = "Verify page URLs")
+    @Test(description = "Verify that page URLs are correct for Login, Home, and Product pages.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Page URLs")
     public void testVerifyPageUrls() {
         assertPageUrl(prop.getProperty("url"));
 
@@ -64,17 +73,21 @@ public class PageEntitysTests extends BaseTest {
         assertPageUrl(prop.getProperty("home_page_url"));
 
         homePage.clickOnProductName(prop.getProperty("product_name"));
-        ProductPage productPage = new ProductPage(driver);  // Use corrected class name
+        ProductPage productPage = new ProductPage(driver);
         String actualProductPageUrl = productPage.getPageURL();
         Assert.assertEquals(actualProductPageUrl.substring(0, actualProductPageUrl.length() - 1), prop.getProperty("product_page_url"), "Product page URL is incorrect.");
     }
 
-    @Test(description = "Verify page source element")
+    @Test(description = "Verify the presence of a specific element in the page source.")
+    @Severity(SeverityLevel.MINOR)
+    @Story("Page Source")
     public void testVerifyPageSourceElement() {
         assertPageSourceContains(DESCRIPTION_META_TAG);
     }
 
-    @Test(description = "Verify social media links in the footer are working")
+    @Test(description = "Verify that social media links in the footer open in new windows and have correct titles.")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Social Media Links")
     public void testVerifySocialMediaLinks() {
         loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
         HomePage homePage = new HomePage(driver);
