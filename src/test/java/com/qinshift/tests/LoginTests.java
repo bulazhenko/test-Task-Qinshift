@@ -52,7 +52,7 @@ public class LoginTests extends BaseTest {
     @Test(dataProvider = "loginCredentials", description = "Verify that a user can log in with valid credentials.")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Successful Login")
-    public void testLogin(String username, String password) {
+    public void testLoginParametrized(String username, String password) {
         loginPage.doLogIn(username, password);
         assertLockedOutUser(username);
         if (!username.equalsIgnoreCase("locked_out_user")) {
@@ -63,7 +63,7 @@ public class LoginTests extends BaseTest {
     @Test(dataProvider = "loginCredentials", description = "Verify that a user can log in by pressing Enter key.")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Login with Enter Key")
-    public void testLoginWithEnter(String username, String password) {
+    public void testLoginWithEnterKeyParametrized(String username, String password) {
         loginPage.doLogInEnterKey(username, password, PRESS_ENTER_KEY);
         assertLockedOutUser(username);
         if (!username.equalsIgnoreCase("locked_out_user")) {
