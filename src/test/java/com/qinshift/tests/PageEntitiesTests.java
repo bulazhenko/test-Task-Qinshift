@@ -3,6 +3,7 @@ package com.qinshift.tests;
 import com.qinshift.pages.HomePage;
 import com.qinshift.pages.LoginPage;
 import com.qinshift.pages.ProductPage;
+import com.qinshift.tests.BaseTest.BaseTest;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -53,7 +54,7 @@ public class PageEntitiesTests extends BaseTest {
     public void testVerifyPageTitles() {
         assertPageTitle(prop.getProperty("page_title"));
 
-        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
+        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"));
         HomePage homePage = new HomePage(driver);
         assertPageTitle(prop.getProperty("page_title"));
 
@@ -68,7 +69,7 @@ public class PageEntitiesTests extends BaseTest {
     public void testVerifyPageUrls() {
         assertPageUrl(prop.getProperty("url"));
 
-        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
+        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"));
         HomePage homePage = new HomePage(driver);
         assertPageUrl(prop.getProperty("home_page_url"));
 
@@ -89,7 +90,7 @@ public class PageEntitiesTests extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Story("Social Media Links")
     public void testVerifySocialMediaLinks() {
-        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
+        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"));
         HomePage homePage = new HomePage(driver);
 
         homePage.goToSocialMedia("facebook");

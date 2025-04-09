@@ -3,6 +3,7 @@ package com.qinshift.tests;
 import com.qinshift.pages.HomePage;
 import com.qinshift.pages.LoginPage;
 import com.qinshift.pages.ProductPage;
+import com.qinshift.tests.BaseTest.BaseTest;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -27,7 +28,7 @@ public class HomePageTests extends BaseTest {
     public void setup() {
         driver.get(prop.getProperty("url"));
         loginPage = new LoginPage(driver);
-        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), false);
+        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"));
         homePage = new HomePage(driver);
     }
 

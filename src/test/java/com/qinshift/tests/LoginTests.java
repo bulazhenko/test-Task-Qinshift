@@ -3,12 +3,11 @@ package com.qinshift.tests;
 import com.qinshift.entities.ErrorMessageHelper;
 import com.qinshift.pages.HomePage;
 import com.qinshift.pages.LoginPage;
+import com.qinshift.tests.BaseTest.BaseTest;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -21,7 +20,6 @@ public class LoginTests extends BaseTest {
     private ErrorMessageHelper errorMessageHelper;
     private static final String PRODUCTS_PAGE_TITLE = "Products";
     private static final boolean PRESS_ENTER_KEY = true;
-    private static final Logger logger = LoggerFactory.getLogger(LoginTests.class);
 
     @DataProvider(name = "loginCredentials")
     public Object[][] loginCredentials() {
@@ -55,8 +53,7 @@ public class LoginTests extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Story("Successful Login")
     public void testLogin(String username, String password) {
-        logger.info("Starting testLogin with username: {}", username);
-        loginPage.doLogIn(username, password, !PRESS_ENTER_KEY);
+        loginPage.doLogIn(username, password);
         assertLockedOutUser(username);
         if (!username.equalsIgnoreCase("locked_out_user")) {
             assertSuccessfulLogin();
@@ -67,8 +64,7 @@ public class LoginTests extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Story("Login with Enter Key")
     public void testLoginWithEnter(String username, String password) {
-        logger.info("Starting testLoginWithEnter with username: {}", username);
-        loginPage.doLogIn(username, password, PRESS_ENTER_KEY);
+        loginPage.doLogInEnterKey(username, password, PRESS_ENTER_KEY);
         assertLockedOutUser(username);
         if (!username.equalsIgnoreCase("locked_out_user")) {
             assertSuccessfulLogin();
@@ -79,8 +75,7 @@ public class LoginTests extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Story("Logout")
     public void testLogout() {
-        logger.info("Starting testLogout");
-        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"), !PRESS_ENTER_KEY);
+        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("password"));
         loginPage.logout();
         Assert.assertEquals(driver.getCurrentUrl(), prop.getProperty("url"), "User should be redirected to the login page after logout.");
     }
@@ -89,8 +84,7 @@ public class LoginTests extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Story("Failed Login")
     public void testLoginWithInvalidUsername() {
-        logger.info("Starting testLoginWithInvalidUsername");
-        loginPage.doLogIn(prop.getProperty("invalid_username"), prop.getProperty("password"), !PRESS_ENTER_KEY);
+        loginPage.doLogIn(prop.getProperty("invalid_username"), prop.getProperty("password"));
         assertInvalidLoginError();
     }
 
@@ -98,13 +92,11 @@ public class LoginTests extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Story("Failed Login")
     public void testLoginWithInvalidPassword() {
-        logger.info("Starting testLoginWithInvalidPassword");
-        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("invalid_password"), PRESS_ENTER_KEY);
+        loginPage.doLogIn(prop.getProperty("username"), prop.getProperty("invalid_password"));
         assertInvalidLoginError();
     }
 
     private void assertInvalidLoginError() {
-        logger.info("Asserting invalid login error");
         errorMessageHelper = new ErrorMessageHelper(driver);
         Assert.assertTrue(Boolean.parseBoolean(String.valueOf(errorMessageHelper.getErrorMessageElement().isDisplayed())), "Error message should be displayed.");
         Assert.assertEquals(errorMessageHelper.getErrorMessageText(), prop.getProperty("invalid_login_error"), "Error message text is incorrect.");

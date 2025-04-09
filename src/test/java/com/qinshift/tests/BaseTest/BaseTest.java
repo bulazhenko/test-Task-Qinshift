@@ -1,4 +1,4 @@
-package com.qinshift.tests;
+package com.qinshift.tests.BaseTest;
 
 import com.qinshift.utils.Configuration;
 import com.qinshift.webDriver.SingletonWebDriver;

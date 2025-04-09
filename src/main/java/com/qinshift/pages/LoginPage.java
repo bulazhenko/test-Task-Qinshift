@@ -18,7 +18,7 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    public void doLogIn(String username, String password, boolean pressEnterKey) {
+    public void doLogInEnterKey(String username, String password, boolean pressEnterKey) {
         logger.info("Logging in with username: {}, password (masked): {}, pressEnterKey: {}", username, maskPassword(password), pressEnterKey);
         driver.findElement(USERNAME_INPUT).sendKeys(username);
         driver.findElement(PASSWORD_INPUT).sendKeys(password);
@@ -30,6 +30,14 @@ public class LoginPage extends BasePage {
         logger.info("Login action performed");
     }
 
+    public void doLogIn(String username, String password) {
+        logger.info("Logging in with username: {}, password (masked): {}", username, maskPassword(password));
+        driver.findElement(USERNAME_INPUT).sendKeys(username);
+        driver.findElement(PASSWORD_INPUT).sendKeys(password);
+        driver.findElement(LOGIN_BUTTON).click();
+        logger.info("Login action performed");
+    }
+
     private String maskPassword(String password) {
         if (password == null || password.isEmpty()) {
             return "";
@@ -37,4 +45,3 @@ public class LoginPage extends BasePage {
         return "*".repeat(password.length());
     }
 }
-
