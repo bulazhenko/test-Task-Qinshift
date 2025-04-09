@@ -3,7 +3,7 @@ package com.qinshift.tests;
 import com.qinshift.entities.ErrorMessageHelper;
 import com.qinshift.pages.HomePage;
 import com.qinshift.pages.LoginPage;
-import com.qinshift.tests.BaseTest.BaseTest;
+import com.qinshift.tests.baseTest.BaseTest;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
